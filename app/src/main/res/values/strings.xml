@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name" translatable="false">LocaleEx</string>
+
+    <string name="title_home">Home</string>
+    <string name="home_fragment_message">This is home Fragment</string>
+
+    <string name="title_dashboard">Dashboard</string>
+    <string name="dashboard_fragment_message">This is dashboard Fragment</string>
+
+    <string name="title_notifications">Notifications</string>
+    <string name="notifications_fragment_message">This is notifications Fragment</string>
+</resources>

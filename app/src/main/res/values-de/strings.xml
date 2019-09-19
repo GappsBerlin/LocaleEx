@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_home">Haus</string>
+    <string name="title_dashboard">Instrumententafel</string>
+    <string name="title_notifications">Benachrichtigung</string>
+    <string name="notifications_fragment_message">Das ist das Notifications Fragment</string>
+    <string name="home_fragment_message">Das ist das Home Fragment</string>
+    <string name="dashboard_fragment_message">Das ist das Dashboard Fragment</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/language_setting_english" android:title="english"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/language_setting_german" android:title="german"
+        tools:ignore="HardcodedText" />
+    <item android:id="@+id/language_setting_french" android:title="french"
+        tools:ignore="HardcodedText" />
+</menu>

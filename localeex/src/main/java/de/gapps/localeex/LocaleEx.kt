@@ -13,11 +13,17 @@ object LocaleEx : ILocaleEx, ILocaleExPrefs, ILocaleExListenerHandler by LocaleE
 
     private const val TAG = "LocaleEx"
 
+    override val Context.storedLocale: Locale
+        get() = localePref
+
     override fun Context.restoreLocale() =
         updateResources(localePref, true)
 
-    override fun Context.applyNewLocale(locale: Locale) =
-        updateResources(locale, false)
+    override fun Context.applyNewLocale(locale: Locale): Context {
+        val newContext = updateResources(locale, false)
+        LocaleExListenerHandler.notifyListener(newContext)
+        return newContext
+    }
 
     override fun Context.updateConfiguration(config: Configuration): Configuration =
         updateConfigurationInternal(config, handleDeprecation = true).second
@@ -40,7 +46,7 @@ object LocaleEx : ILocaleEx, ILocaleExPrefs, ILocaleExListenerHandler by LocaleE
                     "config: $config; "
         )
 
-        return (if (handleDeprecation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        return if (handleDeprecation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             config.setLocale(locale)
             Pair(createConfigurationContext(config), config)
         } else {
@@ -49,6 +55,6 @@ object LocaleEx : ILocaleEx, ILocaleExPrefs, ILocaleExListenerHandler by LocaleE
             @Suppress("DEPRECATION")
             resources.updateConfiguration(config, resources.displayMetrics)
             Pair(this, config)
-        }).also { LocaleExListenerHandler.notifyListener(it.first) }
+        }
     }
 }

@@ -1,23 +1,39 @@
 package de.gapps.localeex.demo
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.core.content.edit
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import de.gapps.localeex.LocaleEx
 import de.gapps.localeex.impl.LocaleExActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class MainActivity : LocaleExActivity() {
 
     companion object {
 
+        private const val SER_RECREATE = "SER_RECREATE"
+
         lateinit var activity: MainActivity
     }
+
+    private val sharedPreferences: SharedPreferences
+        get() = activity.getSharedPreferences(SER_RECREATE, Context.MODE_PRIVATE)
+
+    private var shouldRecreate: Boolean
+        get() = sharedPreferences.getBoolean(SER_RECREATE, false)
+        set(value) = sharedPreferences.edit { putBoolean(SER_RECREATE, value) }
+
+    private val recreateListener: (Context) -> Unit = { activity.recreate() }
 
     init {
         activity = this
@@ -27,6 +43,37 @@ class MainActivity : LocaleExActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        initBottomBar()
+        if (shouldRecreate) LocaleEx.addListener(recreateListener)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.also { MenuInflater(this).inflate(R.menu.language_setting, it) }
+        menu?.findItem(R.id.language_setting_reload_fragment)?.isChecked = shouldRecreate
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.language_setting_reload_fragment -> {
+                item.isChecked = !item.isChecked
+                if (item.isChecked) LocaleEx.addListener(recreateListener)
+                else LocaleEx.removeListener(recreateListener)
+                shouldRecreate = item.isChecked
+            }
+            R.id.language_setting_english -> applyNewLocale(Locale("en"))
+            R.id.language_setting_german -> applyNewLocale(Locale("de"))
+            R.id.language_setting_french -> applyNewLocale(Locale("fr"))
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        LocaleEx.removeListener(recreateListener)
+        super.onDestroy()
+    }
+
+    private fun initBottomBar() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
@@ -36,19 +83,5 @@ class MainActivity : LocaleExActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         setupActionBarWithNavController(navController, appBarConfiguration)
         nav_view.setupWithNavController(navController)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menu?.also { MenuInflater(this).inflate(R.menu.language_setting, it) }
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.language_setting_english -> applyNewLocale(Locale("en"))
-            R.id.language_setting_german -> applyNewLocale(Locale("de"))
-            R.id.language_setting_french -> applyNewLocale(Locale("fr"))
-        }
-        return super.onOptionsItemSelected(item)
     }
 }

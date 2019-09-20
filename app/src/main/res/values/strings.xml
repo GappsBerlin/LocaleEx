@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name" translatable="false">LocaleEx</string>
+    <string name="local_service_connected" translatable="false">service connected</string>
+    <string name="local_service_disconnected" translatable="false">service disconnected</string>
 
     <string name="title_home">Home</string>
-    <string name="home_fragment_message">This is home Fragment</string>
+    <string name="home_fragment_message">%1$s: This is home Fragment</string>
 
     <string name="title_dashboard">Dashboard</string>
-    <string name="dashboard_fragment_message">This is dashboard Fragment</string>
+    <string name="dashboard_fragment_message">%1$s: This is dashboard Fragment</string>
 
     <string name="title_notifications">Notifications</string>
-    <string name="notifications_fragment_message">This is notifications Fragment</string>
+    <string name="notifications_fragment_message">%1$s: This is notifications Fragment</string>
 </resources>

@@ -6,6 +6,8 @@ import java.util.*
 
 interface ILocaleEx {
 
+    val Context.storedLocale: Locale
+
     fun Context.restoreLocale(): Context
     fun Context.applyNewLocale(locale: Locale): Context
     fun Context.updateConfiguration(config: Configuration): Configuration

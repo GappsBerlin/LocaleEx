@@ -3,7 +3,7 @@
     <string name="title_home">Maison</string>
     <string name="title_dashboard">Tableau de bord</string>
     <string name="title_notifications">Notifications</string>
-    <string name="notifications_fragment_message">Ceci est un Fragment de notifications</string>
-    <string name="home_fragment_message">Ceci est la maison Fragment</string>
-    <string name="dashboard_fragment_message">"Ceci est un Fragment de tableau de bord "</string>
+    <string name="notifications_fragment_message">%1$s: Ceci est un Fragment de notifications</string>
+    <string name="home_fragment_message">%1$s: Ceci est la maison Fragment</string>
+    <string name="dashboard_fragment_message">%1$s: Ceci est un Fragment de tableau de bord</string>
 </resources>

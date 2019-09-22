@@ -4,10 +4,16 @@
     tools:ignore="AlwaysShowAction">
     <item android:id="@+id/language_setting_reload_fragment" android:title="recreate"
         tools:ignore="HardcodedText" android:checkable="true" android:checked="false"/>
-    <item android:id="@+id/language_setting_english" android:title="english"
+    <item
+        android:id="@+id/language_setting_english"
+        android:title="@string/english_flag"
         tools:ignore="AppCompatResource,HardcodedText" android:showAsAction="always" />
-    <item android:id="@+id/language_setting_german" android:title="german"
+    <item
+        android:id="@+id/language_setting_german"
+        android:title="@string/german_flag"
         tools:ignore="AppCompatResource,HardcodedText" android:showAsAction="always" />
-    <item android:id="@+id/language_setting_french" android:title="french"
+    <item
+        android:id="@+id/language_setting_french"
+        android:title="@string/french_flag"
         tools:ignore="AppCompatResource,HardcodedText" android:showAsAction="always" />
 </menu>

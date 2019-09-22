@@ -3,12 +3,14 @@
     <string name="local_service_connected" translatable="false">service connected</string>
     <string name="local_service_disconnected" translatable="false">service disconnected</string>
 
-    <string name="title_home">Home</string>
-    <string name="home_fragment_message">%1$s: This is home Fragment</string>
+    <string name="home">Home &#127468;&#127463;</string>
+    <string name="dashboard">Dashboard &#127468;&#127463;</string>
+    <string name="notifications">Notifications &#127468;&#127463;</string>
 
-    <string name="title_dashboard">Dashboard</string>
-    <string name="dashboard_fragment_message">%1$s: This is dashboard Fragment</string>
+    <string name="english_flag" translatable="false">&#127468;&#127463;</string>
+    <string name="german_flag" translatable="false">&#127465;&#127466;</string>
+    <string name="french_flag" translatable="false">&#127467;&#127479;</string>
 
-    <string name="title_notifications">Notifications</string>
-    <string name="notifications_fragment_message">%1$s: This is notifications Fragment</string>
+    <string name="flag">&#127468;&#127463;</string>
+    <string name="message">%1$s: &#127468;&#127463;</string>
 </resources>

@@ -4,7 +4,7 @@ import de.gapps.localeex.demo.R
 import de.gapps.localeex.demo.ui.base.DemoFragment
 import de.gapps.localeex.demo.ui.base.DemoViewModel
 
-class DashboardViewModel : DemoViewModel(R.string.dashboard_fragment_message)
+class DashboardViewModel : DemoViewModel(R.string.dashboard)
 
 class DashboardFragment : DemoFragment<DashboardViewModel>() {
     override val viewModelClass = DashboardViewModel::class

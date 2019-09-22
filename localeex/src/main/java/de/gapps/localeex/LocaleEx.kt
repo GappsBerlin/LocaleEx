@@ -8,18 +8,25 @@ import android.os.Build
 import android.util.Log
 import java.util.*
 
+/**
+ * [LocaleEx] provides functionality to define an exclusive [Locale] in any [Context].
+ *
+ */
+object LocaleEx : ILocaleEx,
+    ILocaleExListenerHandler by LocaleExListenerHandler {
 
-object LocaleEx : ILocaleEx, ILocaleExPrefs, ILocaleExListenerHandler by LocaleExListenerHandler {
+    private val TAG = LocaleEx::class.java.simpleName
 
-    private const val TAG = "LocaleEx"
+    private val Context.prefs: LocaleExPreferences
+        get() = LocaleExPreferences(this)
 
     override val Context.storedLocale: Locale
-        get() = localePref
+        get() = prefs.localePref
 
     override fun Context.restoreLocale() =
-        updateResources(localePref, true)
+        updateResources(prefs.localePref, false)
 
-    override fun Context.applyNewLocale(locale: Locale): Context {
+    override fun Context.applyLocale(locale: Locale): Context {
         val newContext = updateResources(locale, false)
         LocaleExListenerHandler.notifyListener(newContext)
         return newContext
@@ -29,7 +36,7 @@ object LocaleEx : ILocaleEx, ILocaleExPrefs, ILocaleExListenerHandler by LocaleE
         updateConfigurationInternal(config, handleDeprecation = true).second
 
     private fun Context.updateResources(locale: Locale, handleDeprecation: Boolean): Context = run {
-        localePref = locale
+        prefs.localePref = locale
         Locale.setDefault(locale)
 
         val config = Configuration(resources.configuration)
@@ -38,15 +45,16 @@ object LocaleEx : ILocaleEx, ILocaleExPrefs, ILocaleExListenerHandler by LocaleE
 
     private fun Context.updateConfigurationInternal(
         config: Configuration,
-        locale: Locale = localePref,
+        locale: Locale = prefs.localePref,
         handleDeprecation: Boolean
     ): Pair<Context, Configuration> {
         Log.v(
-            TAG, "updateConfigurationInternal() locale: $locale (localePref=$localePref); " +
-                    "config: $config; "
+            TAG,
+            "updateConfigurationInternal() BEFORE locale: $locale (localePref=${prefs.localePref}); " +
+                    "config: $config"
         )
 
-        return if (handleDeprecation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        return (if (handleDeprecation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             config.setLocale(locale)
             Pair(createConfigurationContext(config), config)
         } else {
@@ -55,6 +63,12 @@ object LocaleEx : ILocaleEx, ILocaleExPrefs, ILocaleExListenerHandler by LocaleE
             @Suppress("DEPRECATION")
             resources.updateConfiguration(config, resources.displayMetrics)
             Pair(this, config)
+        }).also {
+            Log.v(
+                TAG,
+                "updateConfigurationInternal() AFTER locale: $locale (localePref=${prefs.localePref}); " +
+                        "config: $config"
+            )
         }
     }
 }

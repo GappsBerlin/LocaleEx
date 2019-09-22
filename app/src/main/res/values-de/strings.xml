@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_home">Haus</string>
-    <string name="title_dashboard">Instrumententafel</string>
-    <string name="title_notifications">Benachrichtigung</string>
-    <string name="notifications_fragment_message">%1$s: Das ist das Notifications Fragment</string>
-    <string name="home_fragment_message">%1$s: Das ist das Home Fragment</string>
-    <string name="dashboard_fragment_message">%1$s: Das ist das Dashboard Fragment</string>
+    <string name="home">Home &#127465;&#127466;</string>
+    <string name="dashboard">Dashboard &#127465;&#127466;</string>
+    <string name="notifications">Notifications &#127465;&#127466;</string>
+
+    <string name="flag">&#127465;&#127466;</string>
+    <string name="message">%1$s: &#127465;&#127466;</string>
 </resources>

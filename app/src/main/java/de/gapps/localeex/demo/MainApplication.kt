@@ -15,6 +15,7 @@ class MainApplication : LocaleExApplication() {
     companion object {
 
         lateinit var application: MainApplication
+
         var service: MainService? = null
     }
 

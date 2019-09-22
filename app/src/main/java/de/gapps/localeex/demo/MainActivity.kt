@@ -6,32 +6,39 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.core.content.edit
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import de.gapps.localeex.ISharedPreferenceHolder
 import de.gapps.localeex.LocaleEx
+import de.gapps.localeex.PreferenceProperty
 import de.gapps.localeex.impl.LocaleExActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.withContext
 import java.util.*
 
-class MainActivity : LocaleExActivity() {
+class MainActivity : LocaleExActivity(), ISharedPreferenceHolder {
 
     companion object {
 
         private const val SER_RECREATE = "SER_RECREATE"
 
         lateinit var activity: MainActivity
+
+        val application: MainApplication
+            get() = activity.application as MainApplication
+
+        val service: MainService?
+            get() = MainApplication.service
     }
 
-    private val sharedPreferences: SharedPreferences
+    override val sharedPrefs: SharedPreferences
         get() = activity.getSharedPreferences(SER_RECREATE, Context.MODE_PRIVATE)
 
-    private var shouldRecreate: Boolean
-        get() = sharedPreferences.getBoolean(SER_RECREATE, false)
-        set(value) = sharedPreferences.edit { putBoolean(SER_RECREATE, value) }
+    private var shouldRecreate by PreferenceProperty(SER_RECREATE, false) { value ->
+        if (value) LocaleEx.addListener(recreateListener)
+        else LocaleEx.removeListener(recreateListener)
+    }
 
     private val recreateListener: (Context) -> Unit = { activity.recreate() }
 
@@ -57,13 +64,11 @@ class MainActivity : LocaleExActivity() {
         when (item.itemId) {
             R.id.language_setting_reload_fragment -> {
                 item.isChecked = !item.isChecked
-                if (item.isChecked) LocaleEx.addListener(recreateListener)
-                else LocaleEx.removeListener(recreateListener)
                 shouldRecreate = item.isChecked
             }
-            R.id.language_setting_english -> applyNewLocale(Locale("en"))
-            R.id.language_setting_german -> applyNewLocale(Locale("de"))
-            R.id.language_setting_french -> applyNewLocale(Locale("fr"))
+            R.id.language_setting_english -> applyLocale(Locale("en"))
+            R.id.language_setting_german -> applyLocale(Locale("de"))
+            R.id.language_setting_french -> applyLocale(Locale("fr"))
         }
         return super.onOptionsItemSelected(item)
     }

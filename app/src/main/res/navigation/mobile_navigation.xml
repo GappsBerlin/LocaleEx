@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="de.gapps.localeex.demo.ui.pages.HomeFragment"
-        android:label="@string/title_home"
+        android:label="@string/home"
         tools:layout="@layout/fragment_sample_page" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="de.gapps.localeex.demo.ui.pages.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/dashboard"
         tools:layout="@layout/fragment_sample_page" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="de.gapps.localeex.demo.ui.pages.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/notifications"
         tools:layout="@layout/fragment_sample_page" />
 </navigation>

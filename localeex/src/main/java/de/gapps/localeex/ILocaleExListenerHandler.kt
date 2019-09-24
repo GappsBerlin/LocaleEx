@@ -2,8 +2,9 @@ package de.gapps.localeex
 
 import android.content.Context
 
-internal interface ILocaleExListenerHandler {
+interface ILocaleExListenerHandler {
 
-    fun addListener(listener: (context: Context) -> Unit)
-    fun removeListener(listener: (context: Context) -> Unit)
+    fun clearLocaleListener()
+    fun addLocaleListener(listener: (context: Context) -> Unit)
+    fun removeLocaleListener(listener: (context: Context) -> Unit)
 }

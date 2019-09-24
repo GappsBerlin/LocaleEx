@@ -7,11 +7,13 @@ internal object LocaleExListenerHandler : ILocaleExListenerHandler {
 
     private val listener = ArrayList<(context: Context) -> Unit>()
 
-    override fun addListener(listener: (context: Context) -> Unit) {
+    override fun clearLocaleListener() = listener.clear()
+
+    override fun addLocaleListener(listener: (context: Context) -> Unit) {
         this.listener.add(listener)
     }
 
-    override fun removeListener(listener: (context: Context) -> Unit) {
+    override fun removeLocaleListener(listener: (context: Context) -> Unit) {
         this.listener.remove(listener)
     }
 

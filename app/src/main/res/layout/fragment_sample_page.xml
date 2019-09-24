@@ -30,8 +30,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:textSize="22sp"
+                android:textStyle="italic"
                 android:text="@{localeResult.locale}" />
 
             <TextView

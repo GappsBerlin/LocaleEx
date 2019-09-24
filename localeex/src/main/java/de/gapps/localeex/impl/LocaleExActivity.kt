@@ -7,6 +7,7 @@ import de.gapps.localeex.ILocaleEx
 import de.gapps.localeex.LocaleEx
 
 open class LocaleExActivity : AppCompatActivity(), ILocaleEx by LocaleEx {
+
     override fun attachBaseContext(newBase: Context) =
         super.attachBaseContext(newBase.restoreLocale())
 

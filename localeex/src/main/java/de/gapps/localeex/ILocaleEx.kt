@@ -7,7 +7,7 @@ import java.util.*
 /**
  *
  */
-interface ILocaleEx {
+interface ILocaleEx : ILocaleExListenerHandler {
 
     /**
      * Returns the locale that was set with [applyLocale].

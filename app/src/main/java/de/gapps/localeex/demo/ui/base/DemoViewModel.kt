@@ -10,7 +10,7 @@ import de.gapps.localeex.demo.R
 abstract class DemoViewModel(val title: Int) : ViewModel() {
 
     init {
-        LocaleEx.addListener { _localeResultLoader() }
+        LocaleEx.addLocaleListener { _localeResultLoader() }
     }
 
     private var _localeResultLoader: () -> Unit

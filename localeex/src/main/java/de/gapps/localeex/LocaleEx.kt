@@ -17,7 +17,13 @@ import de.gapps.localeex.preferences.LocaleExPreferencesInternal
 import java.util.*
 
 /**
- * [LocaleEx] provides functionality to define an exclusive [Locale] in your app.
+ * [LocaleEx] provides functionality to define an exclusive [Locale] in your app without changing
+ * the operating systems [Locale].
+ *
+ * Features:
+ * - applied [Locale] is stored persistent and is restored on app restart
+ * - by default the app is restarted when a new [Locale] is applied
+ * - see [ILocaleExPreferencesInternal] for configuration options
  *
  */
 @SuppressLint("StaticFieldLeak")

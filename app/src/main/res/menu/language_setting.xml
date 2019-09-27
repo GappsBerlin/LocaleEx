@@ -5,6 +5,48 @@
     <item android:id="@+id/language_setting_reload_fragment" android:title="recreate"
         tools:ignore="HardcodedText" android:checkable="true" android:checked="false"/>
     <item
+        android:id="@+id/language_setting_restart_act"
+        android:title="restart activity"
+        tools:ignore="HardcodedText"
+        android:checkable="true"
+        android:checked="false" />
+    <item
+        android:id="@+id/language_setting_restart_app"
+        android:title="restart application"
+        tools:ignore="HardcodedText"
+        android:checkable="true"
+        android:checked="false" />
+    <item
+        android:id="@+id/language_setting_restore_base_context_act"
+        android:title="restore base context (act)"
+        tools:ignore="HardcodedText"
+        android:checkable="true"
+        android:checked="false" />
+    <item
+        android:id="@+id/language_setting_restore_base_context_app"
+        android:title="restore base context (app)"
+        tools:ignore="HardcodedText"
+        android:checkable="true"
+        android:checked="false" />
+    <item
+        android:id="@+id/language_setting_override_config"
+        android:title="override config"
+        tools:ignore="HardcodedText"
+        android:checkable="true"
+        android:checked="false" />
+    <item
+        android:id="@+id/language_setting_config_changed_act"
+        android:title="restore config changed (act)"
+        tools:ignore="HardcodedText"
+        android:checkable="true"
+        android:checked="false" />
+    <item
+        android:id="@+id/language_setting_config_changed_app"
+        android:title="restore config changed (app)"
+        tools:ignore="HardcodedText"
+        android:checkable="true"
+        android:checked="false" />
+    <item
         android:id="@+id/language_setting_handle_deprecation_restore"
         android:title="handle deprecation in restore"
         tools:ignore="HardcodedText"

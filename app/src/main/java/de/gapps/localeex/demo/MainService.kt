@@ -1,10 +1,10 @@
 package de.gapps.localeex.demo
 
+import android.app.Service
 import android.content.Intent
 import android.os.Binder
-import de.gapps.localeex.impl.LocaleExService
 
-class MainService : LocaleExService() {
+class MainService : Service() {
 
     inner class LocalBinder : Binder() {
         internal val service: MainService

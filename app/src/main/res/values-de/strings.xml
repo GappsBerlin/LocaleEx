@@ -5,5 +5,5 @@
     <string name="notifications">Notifications &#127465;&#127466;</string>
 
     <string name="flag">&#127465;&#127466;</string>
-    <string name="message">%1$s: &#127465;&#127466;</string>
+    <string name="message">%1$s: &#127465;&#127466;%2$s</string>
 </resources>

@@ -16,7 +16,14 @@ class MainApplication : LocaleExApplication() {
 
         lateinit var application: MainApplication
 
+        val serviceListener = ArrayList<(MainService?) -> Unit>()
         var service: MainService? = null
+            set(value) {
+                if (value != field) {
+                    field = value
+                    serviceListener.forEach { it(value) }
+                }
+            }
     }
 
     private var boundService: MainService? = null

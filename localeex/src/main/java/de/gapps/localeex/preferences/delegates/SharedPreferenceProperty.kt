@@ -1,4 +1,4 @@
-package de.gapps.localeex
+package de.gapps.localeex.preferences.delegates
 
 import android.content.Context
 import androidx.core.content.edit
@@ -6,15 +6,16 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 @Suppress("FunctionName")
-inline fun <PARENT : Context, reified VALUE_TYPE : Any?> PreferenceProperty(
+inline fun <PARENT : Context, reified VALUE_TYPE : Any?> SharedPreferenceProperty(
     keyPrefs: String,
     keyValue: String,
     default: VALUE_TYPE,
+    commit: Boolean = false,
     crossinline changedListener: (VALUE_TYPE) -> Unit = {}
 ) = object : ReadWriteProperty<PARENT, VALUE_TYPE> {
 
     @Suppress("UNCHECKED_CAST")
-    var PARENT.valuePref: VALUE_TYPE
+    private var PARENT.valuePref: VALUE_TYPE
         get() {
             val sharedPrefs = getSharedPreferences(keyPrefs, Context.MODE_PRIVATE)
             return when (VALUE_TYPE::class) {
@@ -33,12 +34,22 @@ inline fun <PARENT : Context, reified VALUE_TYPE : Any?> PreferenceProperty(
         set(value) {
             val sharedPrefs = getSharedPreferences(keyPrefs, Context.MODE_PRIVATE)
             when (VALUE_TYPE::class) {
-                Boolean::class -> sharedPrefs.edit { putBoolean(keyValue, value as Boolean) }
-                Int::class -> sharedPrefs.edit { putInt(keyValue, value as Int) }
-                Float::class -> sharedPrefs.edit { putFloat(keyValue, value as Float) }
-                String::class -> sharedPrefs.edit { putString(keyValue, value as String) }
-                Long::class -> sharedPrefs.edit { putLong(keyValue, value as Long) }
-                Set::class -> sharedPrefs.edit { putStringSet(keyValue, value as Set<String>) }
+                Boolean::class -> sharedPrefs.edit(commit) {
+                    putBoolean(
+                        keyValue,
+                        value as Boolean
+                    )
+                }
+                Int::class -> sharedPrefs.edit(commit) { putInt(keyValue, value as Int) }
+                Float::class -> sharedPrefs.edit(commit) { putFloat(keyValue, value as Float) }
+                String::class -> sharedPrefs.edit(commit) { putString(keyValue, value as String) }
+                Long::class -> sharedPrefs.edit(commit) { putLong(keyValue, value as Long) }
+                Set::class -> sharedPrefs.edit(commit) {
+                    putStringSet(
+                        keyValue,
+                        value as Set<String>
+                    )
+                }
                 else -> throw IllegalStateException("set($value) invalid type keyValue=$keyValue; type=${VALUE_TYPE::class}")
             }
         }

@@ -2,20 +2,22 @@ package de.gapps.localeex
 
 import android.content.Context
 import android.content.res.Configuration
+import de.gapps.localeex.listener.ILocaleExListenerHandler
+import de.gapps.localeex.preferences.ILocaleExPreferences
 import java.util.*
 
 /**
  *
  */
-interface ILocaleEx : ILocaleExListenerHandler {
+interface ILocaleEx : ILocaleExListenerHandler, ILocaleExPreferences {
 
     /**
-     * Returns the locale that was set with [applyLocale].
+     * Returns the [Locale] which was set with [applyLocale].
      */
-    val Context.storedLocale: Locale
+    override var Context.storedLocale: Locale
 
     /**
-     * Restores the last [Locale] which was set with [applyLocale] to the [Context].
+     * Restores the last [Locale] which was set with [applyLocale] in the [Context].
      *
      * @return [Context] with the restored [Locale]
      */
@@ -29,9 +31,10 @@ interface ILocaleEx : ILocaleExListenerHandler {
     fun Context.applyLocale(locale: Locale): Context
 
     /**
-     * Updates the [Context] with the provided [Configuration].
+     * Updates the [Configuration] with the last [Locale] which was set in [applyLocale].
      *
-     * @return Updated [Configuration]
+     * @return [Configuration] updated with last [Locale]
      */
     fun Context.updateConfiguration(config: Configuration): Configuration
 }
+

@@ -8,18 +8,25 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
+import de.gapps.localeex.listener.ILocaleExListenerHandler
+import de.gapps.localeex.listener.LocaleExListenerHandler
+import de.gapps.localeex.preferences.ILocaleExPreferences
+import de.gapps.localeex.preferences.ILocaleExPreferencesInternal
+import de.gapps.localeex.preferences.LocaleExPreferences
+import de.gapps.localeex.preferences.LocaleExPreferencesInternal
 import java.util.*
 
 /**
- * [LocaleEx] provides functionality to define an exclusive [Locale] in any [Context].
+ * [LocaleEx] provides functionality to define an exclusive [Locale] in your app.
  *
  */
 @SuppressLint("StaticFieldLeak")
-object LocaleEx : ILocaleEx,
+object LocaleEx : ILocaleExInternal,
     ILocaleExPreferences by LocaleExPreferences,
+    ILocaleExPreferencesInternal by LocaleExPreferencesInternal,
     ILocaleExListenerHandler by LocaleExListenerHandler {
 
-    private val TAG = LocaleEx::class.java.simpleName
+    internal val TAG = LocaleEx::class.java.simpleName
 
     private val recreateCallback: (Context) -> Unit = { (it as? Activity)?.recreate() }
 

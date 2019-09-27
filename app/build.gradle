@@ -36,6 +36,7 @@ android {
 dependencies {
     implementation project(":localeex")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.ext.kotlin}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${rootProject.ext.coroutines}"
     implementation "androidx.appcompat:appcompat:${rootProject.ext.appCompat}"
     implementation "androidx.core:core-ktx:${rootProject.ext.ktx}"
     implementation "androidx.constraintlayout:constraintlayout:1.1.3"

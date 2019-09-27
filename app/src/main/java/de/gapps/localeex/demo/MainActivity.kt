@@ -1,6 +1,6 @@
 package de.gapps.localeex.demo
 
-import android.content.Context
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -10,14 +10,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import de.gapps.localeex.LocaleEx.shouldRecreateActivity
-import de.gapps.localeex.LocaleExPreferences
-import de.gapps.localeex.LocaleExPreferences.handleDeprecationInApply
-import de.gapps.localeex.LocaleExPreferences.handleDeprecationInRestore
-import de.gapps.localeex.LocaleExPreferences.handleDeprecationInUpdateConfig
 import de.gapps.localeex.impl.LocaleExActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
+import kotlin.reflect.KClass
 
 class MainActivity : LocaleExActivity() {
 
@@ -32,7 +28,8 @@ class MainActivity : LocaleExActivity() {
             get() = MainApplication.service
     }
 
-    private val recreateListener: (Context) -> Unit = { recreate() }
+    override val activityToStart: KClass<out Activity>
+        get() = MainActivity::class
 
     init {
         activity = this
@@ -41,14 +38,24 @@ class MainActivity : LocaleExActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         initBottomBar()
-        if (shouldRecreateActivity) addLocaleListener(recreateListener)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean = menu?.run {
         MenuInflater(this@MainActivity).inflate(R.menu.language_setting, this)
         findItem(R.id.language_setting_reload_fragment)?.isChecked = shouldRecreateActivity
+        findItem(R.id.language_setting_restart_act)?.isChecked = shouldRestartActivity
+        findItem(R.id.language_setting_restart_app)?.isChecked = shouldRestartApplication
+        findItem(R.id.language_setting_override_config)?.isChecked =
+            restoreInApplyOverrideConfiguration
+        findItem(R.id.language_setting_config_changed_act)?.isChecked =
+            restoreInConfigChangedOfActivity
+        findItem(R.id.language_setting_config_changed_app)?.isChecked =
+            restoreInConfigChangedOfApplication
+        findItem(R.id.language_setting_restore_base_context_act)?.isChecked =
+            restoreInBaseContextOfActivity
+        findItem(R.id.language_setting_restore_base_context_app)?.isChecked =
+            restoreInBaseContextOfApplication
         findItem(R.id.language_setting_handle_deprecation_restore)?.isChecked =
             handleDeprecationInRestore
         findItem(R.id.language_setting_handle_deprecation_apply)?.isChecked =
@@ -64,9 +71,37 @@ class MainActivity : LocaleExActivity() {
                 item.isChecked = !item.isChecked
                 shouldRecreateActivity = item.isChecked
             }
+            R.id.language_setting_restart_act -> {
+                item.isChecked = !item.isChecked
+                shouldRestartActivity = item.isChecked
+            }
+            R.id.language_setting_restart_app -> {
+                item.isChecked = !item.isChecked
+                shouldRestartApplication = item.isChecked
+            }
+            R.id.language_setting_override_config -> {
+                item.isChecked = !item.isChecked
+                restoreInApplyOverrideConfiguration = item.isChecked
+            }
+            R.id.language_setting_config_changed_act -> {
+                item.isChecked = !item.isChecked
+                restoreInConfigChangedOfActivity = item.isChecked
+            }
+            R.id.language_setting_config_changed_app -> {
+                item.isChecked = !item.isChecked
+                restoreInConfigChangedOfApplication = item.isChecked
+            }
             R.id.language_setting_handle_deprecation_restore -> {
                 item.isChecked = !item.isChecked
                 handleDeprecationInRestore = item.isChecked
+            }
+            R.id.language_setting_restore_base_context_act -> {
+                item.isChecked = !item.isChecked
+                restoreInBaseContextOfActivity = item.isChecked
+            }
+            R.id.language_setting_restore_base_context_app -> {
+                item.isChecked = !item.isChecked
+                restoreInBaseContextOfApplication = item.isChecked
             }
             R.id.language_setting_handle_deprecation_apply -> {
                 item.isChecked = !item.isChecked
@@ -79,8 +114,7 @@ class MainActivity : LocaleExActivity() {
             else -> {
                 val entryName = resources.getResourceEntryName(item.itemId)
                 Log.v(
-                    LocaleExPreferences::class.java.simpleName,
-                    "new language selected=R.string.$entryName"
+                    "MainActivity", "new language selected=R.string.$entryName"
                 )
                 applyLocale(
                     when (item.itemId) {
@@ -93,11 +127,6 @@ class MainActivity : LocaleExActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        removeLocaleListener(recreateListener)
-        super.onDestroy()
     }
 
     private fun initBottomBar() {

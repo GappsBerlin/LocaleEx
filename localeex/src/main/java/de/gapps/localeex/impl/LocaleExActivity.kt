@@ -7,12 +7,12 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import de.gapps.localeex.ILocaleExInternal
+import de.gapps.localeex.ILocaleEx
 import de.gapps.localeex.LocaleEx
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
 
-abstract class LocaleExActivity : AppCompatActivity(), ILocaleExInternal by LocaleEx {
+abstract class LocaleExActivity : AppCompatActivity(), ILocaleEx by LocaleEx {
 
     abstract val activityToStart: KClass<out Activity>
 

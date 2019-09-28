@@ -11,25 +11,12 @@ import android.util.Log
 import de.gapps.localeex.listener.ILocaleExListenerHandler
 import de.gapps.localeex.listener.LocaleExListenerHandler
 import de.gapps.localeex.preferences.ILocaleExPreferences
-import de.gapps.localeex.preferences.ILocaleExPreferencesInternal
 import de.gapps.localeex.preferences.LocaleExPreferences
-import de.gapps.localeex.preferences.LocaleExPreferencesInternal
 import java.util.*
 
-/**
- * [LocaleEx] provides functionality to define an exclusive [Locale] in your app without changing
- * the operating systems [Locale].
- *
- * Features:
- * - applied [Locale] is stored persistent and is restored on app restart
- * - by default the app is restarted when a new [Locale] is applied
- * - see [ILocaleExPreferencesInternal] for configuration options
- *
- */
 @SuppressLint("StaticFieldLeak")
-object LocaleEx : ILocaleExInternal,
+object LocaleEx : ILocaleEx,
     ILocaleExPreferences by LocaleExPreferences,
-    ILocaleExPreferencesInternal by LocaleExPreferencesInternal,
     ILocaleExListenerHandler by LocaleExListenerHandler {
 
     internal val TAG = LocaleEx::class.java.simpleName

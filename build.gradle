@@ -15,6 +15,9 @@ buildscript {
         coroutines = "1.3.0"
         appCompat = "1.1.0"
         ktx = "1.1.0"
+        constraintLayout = "1.1.3"
+        lifecycle = "2.1.0"
+        navigation = "2.1.0"
     }
 
     repositories {
@@ -31,6 +34,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 

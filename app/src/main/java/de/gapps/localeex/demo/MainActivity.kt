@@ -1,6 +1,5 @@
 package de.gapps.localeex.demo
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,7 +12,6 @@ import androidx.navigation.ui.setupWithNavController
 import de.gapps.localeex.impl.LocaleExActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
-import kotlin.reflect.KClass
 
 class MainActivity : LocaleExActivity() {
 
@@ -27,9 +25,6 @@ class MainActivity : LocaleExActivity() {
         val service: MainService?
             get() = MainApplication.service
     }
-
-    override val activityToStart: KClass<out Activity>
-        get() = MainActivity::class
 
     init {
         activity = this

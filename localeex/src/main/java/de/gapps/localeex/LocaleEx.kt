@@ -2,76 +2,52 @@
 
 package de.gapps.localeex
 
-import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Application
+import android.app.Service
 import android.content.Context
-import android.content.res.Configuration
-import android.os.Build
-import android.util.Log
+import de.gapps.localeex.impl.LocaleExActivity
+import de.gapps.localeex.impl.LocaleExApplication
+import de.gapps.localeex.internal.ILocaleExInternal
+import de.gapps.localeex.internal.LocaleExInternal
 import de.gapps.localeex.listener.ILocaleExListenerHandler
 import de.gapps.localeex.listener.LocaleExListenerHandler
-import de.gapps.localeex.preferences.ILocaleExPreferences
 import de.gapps.localeex.preferences.LocaleExPreferences
+import de.gapps.localeex.system_callbacks.ILocaleExSystemCallbacks
+import de.gapps.localeex.system_callbacks.LocaleExSystemCallbackHandler
 import java.util.*
 
-@SuppressLint("StaticFieldLeak")
+/**
+ * [LocaleEx] provides functionality to define an exclusive [Locale] in your app without changing
+ * the operating systems [Locale].
+ *
+ * Features:
+ * - applied [Locale] is stored persistent and is restored on app restart
+ * - to make sure the defined [Locale] is also set for your [Application]s [Context] and any or your
+ *   [Service]s [Context]s the app is automatically restarted when a new [Locale] is set by the user
+ * - to fine tune [LocaleEx] for your needs nearly every action can be configured. see the
+ *   [LocaleExPreferences] object and demo app for all available options and how they effect
+ *   the [Locale].
+ *
+ *
+ * To use [LocaleEx] you need to extends all of your [Activity]s from [LocaleExActivity] and you
+ * [Application] from [LocaleExApplication]. If you do not have a custom [Application] please add
+ * the following to your `application` tag in your `Manifest.xml`:
+ * ```
+ *<application
+ *    android:name="de.gapps.localeex.impl.LocaleExApplication"
+ * ```
+ *
+ * Now you just need to call `applyLocale` to define you custom [Locale]:
+ * ```
+ * LocaleEx.applyLocale(Locale("en", "EN"))
+ * ```
+ *
+ * If you do not want to extend your [Activity]s and [Application] from the [LocaleEx] ones you can
+ * also let them implement `ILocaleEx by LocaleEx` and copy the appropriate [LocaleEx] calls
+ * to your implementations.
+ */
 object LocaleEx : ILocaleEx,
-    ILocaleExPreferences by LocaleExPreferences,
-    ILocaleExListenerHandler by LocaleExListenerHandler {
-
-    internal val TAG = LocaleEx::class.java.simpleName
-
-    private val recreateCallback: (Context) -> Unit = { (it as? Activity)?.recreate() }
-
-    override fun Context.restoreLocale(): Context {
-        val locale = storedLocale
-        val newContext = updateResources(locale, handleDeprecationInRestore)
-        Log.d(TAG, "restoreLocale() locale=$locale; context=$newContext")
-        return newContext
-    }
-
-    override fun Context.applyLocale(locale: Locale): Context {
-        val newContext = updateResources(locale, handleDeprecationInApply)
-        Log.d(TAG, "applyLocale() locale=$locale")
-        LocaleExListenerHandler.notifyListener(newContext)
-        return newContext
-    }
-
-    override fun Context.updateConfiguration(config: Configuration): Configuration {
-        val newConfig = updateConfigurationInternal(
-            config,
-            handleDeprecation = handleDeprecationInUpdateConfig
-        ).second
-        Log.d(TAG, "updateConfiguration() newConfig=$config; oldConfig=$config")
-        return newConfig
-    }
-
-    private fun Context.updateResources(locale: Locale, handleDeprecation: Boolean): Context = run {
-        storedLocale = locale
-        Locale.setDefault(locale)
-
-        val config = Configuration(resources.configuration)
-        updateConfigurationInternal(config, locale, handleDeprecation).first
-    }
-
-    private fun Context.updateConfigurationInternal(
-        config: Configuration,
-        locale: Locale = storedLocale,
-        handleDeprecation: Boolean
-    ) = try {
-        if (handleDeprecation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(locale)
-            Pair(createConfigurationContext(config), config)
-        } else {
-            @Suppress("DEPRECATION")
-            config.locale = locale
-            @Suppress("DEPRECATION")
-            resources.updateConfiguration(config, resources.displayMetrics)
-            Pair(this, config)
-        }
-    } catch (t: Throwable) {
-        Pair(this, config)
-    }.also {
-        Log.v(TAG, "updateConfigurationInternal() locale: $locale; config: $config")
-    }
-}
+    ILocaleExInternal by LocaleExInternal,
+    ILocaleExSystemCallbacks by LocaleExSystemCallbackHandler,
+    ILocaleExListenerHandler by LocaleExListenerHandler

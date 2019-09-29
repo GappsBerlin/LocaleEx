@@ -9,10 +9,8 @@ import de.gapps.localeex.LocaleEx
 open class LocaleExApplication : Application(), ILocaleEx by LocaleEx {
 
     override fun attachBaseContext(newBase: Context) =
-        super.attachBaseContext(if (newBase.restoreInBaseContextOfApplication) newBase.restoreLocale() else newBase)
+        super.attachBaseContext(applicationAttachBaseContext(newBase))
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        if (restoreInConfigChangedOfApplication) restoreLocale()
-    }
+    override fun onConfigurationChanged(newConfig: Configuration) =
+        super.onConfigurationChanged(applicationOnConfigurationChanged(newConfig))
 }

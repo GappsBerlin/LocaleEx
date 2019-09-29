@@ -4,7 +4,7 @@
     package="de.gapps.localeex.demo">
 
     <application
-        android:name="de.gapps.localeex.impl.LocaleExApplication"
+        android:name=".MainApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

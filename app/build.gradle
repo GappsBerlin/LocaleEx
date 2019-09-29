@@ -35,7 +35,7 @@ android {
 
 dependencies {
     implementation project(":localeex")
-//    implementation "com.github.SaschaZ:LocaleEx:1.0.0"
+//    implementation "com.github.SaschaZ:LocaleEx:1.0.1"
     
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.ext.kotlin}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${rootProject.ext.coroutines}"

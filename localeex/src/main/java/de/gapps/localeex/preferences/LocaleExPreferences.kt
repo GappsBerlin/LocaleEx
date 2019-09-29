@@ -2,6 +2,7 @@ package de.gapps.localeex.preferences
 
 import android.annotation.SuppressLint
 import android.content.Context
+import de.gapps.localeex.preferences.ILocaleExPreferences.DeprecationHandling
 import de.gapps.localeex.preferences.delegates.FilePreferenceProperty
 import de.gapps.localeex.preferences.delegates.SharedPreferenceProperty
 import java.util.*
@@ -14,9 +15,7 @@ internal object LocaleExPreferences : ILocaleExPreferences {
     private const val PREFS_LANGUAGE_KEY = "PREFS_LANGUAGE_KEY"
     private const val PREFS_COUNTRY_KEY = "PREFS_COUNTRY_KEY"
     private const val PREFS_VARIANT_KEY = "PREFS_VARIANT_KEY"
-    private const val PREFS_RECREATE_ACTIVITY_KEY = "PREFS_RECREATE_ACTIVITY_KEY"
-    private const val PREFS_RESTART_ACTIVITY_KEY = "PREFS_RESTART_ACTIVITY_KEY"
-    private const val PREFS_RESTART_APPLICATION_KEY = "PREFS_RESTART_APPLICATION_KEY"
+    private const val PREFS_POST_ACTION_KEY = "PREFS_POST_ACTION_KEY"
     private const val PREFS_HANDLE_DEPRECATION_RESTORE = "PREFS_HANDLE_DEPRECATION_RESTORE"
     private const val PREFS_HANDLE_DEPRECATION_APPLY = "PREFS_HANDLE_DEPRECATION_APPLY"
     private const val PREFS_HANDLE_DEPRECATION_UPDATE_CONFIG =
@@ -62,40 +61,31 @@ internal object LocaleExPreferences : ILocaleExPreferences {
         }
 
 
-    override var Context.shouldRecreateActivity: Boolean by SharedPreferenceProperty(
-        PREFS_KEY,
-        PREFS_RECREATE_ACTIVITY_KEY,
-        false
-    )
+    override var postAction: ILocaleExPreferences.PostAction =
+        ILocaleExPreferences.PostAction.RestartApplication()
 
-    override var Context.shouldRestartActivity: Boolean by SharedPreferenceProperty(
-        PREFS_KEY,
-        PREFS_RESTART_ACTIVITY_KEY,
-        false
-    )
-
-    override var Context.shouldRestartApplication: Boolean by SharedPreferenceProperty(
-        PREFS_KEY,
-        PREFS_RESTART_APPLICATION_KEY,
-        true
-    )
-
-    override var Context.handleDeprecationInRestore: Boolean by SharedPreferenceProperty(
+    override var Context.handleDeprecationInRestore: DeprecationHandling by SharedPreferenceProperty(
         PREFS_KEY,
         PREFS_HANDLE_DEPRECATION_RESTORE,
-        false
+        DeprecationHandling.IGNORE,
+        setter = { it.toString() },
+        getter = { DeprecationHandling.valueOf(it) }
     )
 
-    override var Context.handleDeprecationInApply: Boolean by SharedPreferenceProperty(
+    override var Context.handleDeprecationInApply: DeprecationHandling by SharedPreferenceProperty(
         PREFS_KEY,
         PREFS_HANDLE_DEPRECATION_APPLY,
-        false
+        DeprecationHandling.IGNORE,
+        setter = { it.toString() },
+        getter = { DeprecationHandling.valueOf(it) }
     )
 
-    override var Context.handleDeprecationInUpdateConfig: Boolean by SharedPreferenceProperty(
+    override var Context.handleDeprecationInUpdateConfig: DeprecationHandling by SharedPreferenceProperty(
         PREFS_KEY,
         PREFS_HANDLE_DEPRECATION_UPDATE_CONFIG,
-        false
+        DeprecationHandling.IGNORE,
+        setter = { it.toString() },
+        getter = { DeprecationHandling.valueOf(it) }
     )
 
     override var Context.restoreInApplyOverrideConfiguration: Boolean by FilePreferenceProperty(

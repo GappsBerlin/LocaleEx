@@ -4,27 +4,26 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
-import de.gapps.localeex.LocaleEx
+import de.gapps.localeex.LocaleEx.TAG
 import de.gapps.localeex.listener.LocaleExListenerHandler
 import de.gapps.localeex.preferences.ILocaleExPreferences
+import de.gapps.localeex.preferences.ILocaleExPreferences.DeprecationHandling
 import de.gapps.localeex.preferences.LocaleExPreferences
 import java.util.*
 
 internal object LocaleExInternal : ILocaleExInternal,
     ILocaleExPreferences by LocaleExPreferences {
 
-    private val TAG = LocaleEx::class.java.simpleName
-
     override fun Context.restoreLocale(): Context {
         val locale = storedLocale
         val newContext = updateResources(locale, handleDeprecationInRestore)
-        Log.d(TAG, "restoreLocale() locale=$locale; context=$newContext")
+        Log.v(TAG, "restoreLocale() locale=$locale; context=$newContext")
         return newContext
     }
 
     override fun Context.applyLocale(locale: Locale): Context {
         val newContext = updateResources(locale, handleDeprecationInApply)
-        Log.d(TAG, "applyLocale() locale=$locale")
+        Log.v(TAG, "applyLocale() locale=$locale")
         LocaleExListenerHandler.notifyListener(newContext)
         return newContext
     }
@@ -34,12 +33,15 @@ internal object LocaleExInternal : ILocaleExInternal,
             config,
             handleDeprecation = handleDeprecationInUpdateConfig
         ).second
-        Log.d(TAG, "updateConfiguration() newConfig=$config; oldConfig=$config")
+        Log.v(TAG, "updateConfiguration() newConfig=$config; oldConfig=$config")
         return newConfig
     }
 
-    private fun Context.updateResources(locale: Locale, handleDeprecation: Boolean): Context = run {
-        storedLocale = locale
+    private fun Context.updateResources(
+        locale: Locale,
+        handleDeprecation: DeprecationHandling
+    ): Context = run {
+        LocaleExPreferences.run { storedLocale = locale }
         Locale.setDefault(locale)
 
         val config = Configuration(resources.configuration)
@@ -49,9 +51,11 @@ internal object LocaleExInternal : ILocaleExInternal,
     private fun Context.updateConfigurationInternal(
         config: Configuration,
         locale: Locale = storedLocale,
-        handleDeprecation: Boolean
+        handleDeprecation: DeprecationHandling
     ) = try {
-        if (handleDeprecation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (handleDeprecation == DeprecationHandling.RESPECT
+            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+        ) {
             config.setLocale(locale)
             Pair(createConfigurationContext(config), config)
         } else {

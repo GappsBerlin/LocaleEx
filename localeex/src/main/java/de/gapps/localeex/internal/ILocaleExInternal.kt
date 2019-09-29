@@ -10,7 +10,7 @@ interface ILocaleExInternal : ILocaleExPreferences {
     /**
      * Returns the [Locale] which was set with [applyLocale].
      */
-    override var Context.storedLocale: Locale
+    override val Context.storedLocale: Locale
 
     /**
      * Restores the last [Locale] which was set with [applyLocale] in the [Context].

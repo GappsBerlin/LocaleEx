@@ -10,6 +10,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import de.gapps.localeex.impl.LocaleExActivity
+import de.gapps.localeex.preferences.ILocaleExPreferences.DeprecationHandling.IGNORE
+import de.gapps.localeex.preferences.ILocaleExPreferences.DeprecationHandling.RESPECT
+import de.gapps.localeex.preferences.ILocaleExPreferences.PostAction.*
+import de.gapps.localeex.preferences.ILocaleExPreferences.PostAction.Nothing
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -38,9 +42,9 @@ class MainActivity : LocaleExActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean = menu?.run {
         MenuInflater(this@MainActivity).inflate(R.menu.language_setting, this)
-        findItem(R.id.language_setting_reload_fragment)?.isChecked = shouldRecreateActivity
-        findItem(R.id.language_setting_restart_act)?.isChecked = shouldRestartActivity
-        findItem(R.id.language_setting_restart_app)?.isChecked = shouldRestartApplication
+        findItem(R.id.language_setting_reload_fragment)?.isChecked = postAction is RecreateActivity
+        findItem(R.id.language_setting_restart_act)?.isChecked = postAction is RestartActivity
+        findItem(R.id.language_setting_restart_app)?.isChecked = postAction is RestartApplication
         findItem(R.id.language_setting_override_config)?.isChecked =
             restoreInApplyOverrideConfiguration
         findItem(R.id.language_setting_config_changed_act)?.isChecked =
@@ -52,11 +56,11 @@ class MainActivity : LocaleExActivity() {
         findItem(R.id.language_setting_restore_base_context_app)?.isChecked =
             restoreInBaseContextOfApplication
         findItem(R.id.language_setting_handle_deprecation_restore)?.isChecked =
-            handleDeprecationInRestore
+            handleDeprecationInRestore == RESPECT
         findItem(R.id.language_setting_handle_deprecation_apply)?.isChecked =
-            handleDeprecationInApply
+            handleDeprecationInApply == RESPECT
         findItem(R.id.language_setting_handle_deprecation_update_configuration)?.isChecked =
-            handleDeprecationInUpdateConfig
+            handleDeprecationInUpdateConfig == RESPECT
         true
     } ?: false
 
@@ -64,15 +68,18 @@ class MainActivity : LocaleExActivity() {
         when (item.itemId) {
             R.id.language_setting_reload_fragment -> {
                 item.isChecked = !item.isChecked
-                shouldRecreateActivity = item.isChecked
+                postAction = if (item.isChecked) RecreateActivity else Nothing
+                invalidateOptionsMenu()
             }
             R.id.language_setting_restart_act -> {
                 item.isChecked = !item.isChecked
-                shouldRestartActivity = item.isChecked
+                postAction = if (item.isChecked) RestartActivity() else Nothing
+                invalidateOptionsMenu()
             }
             R.id.language_setting_restart_app -> {
                 item.isChecked = !item.isChecked
-                shouldRestartApplication = item.isChecked
+                postAction = if (item.isChecked) RestartApplication() else Nothing
+                invalidateOptionsMenu()
             }
             R.id.language_setting_override_config -> {
                 item.isChecked = !item.isChecked
@@ -88,7 +95,7 @@ class MainActivity : LocaleExActivity() {
             }
             R.id.language_setting_handle_deprecation_restore -> {
                 item.isChecked = !item.isChecked
-                handleDeprecationInRestore = item.isChecked
+                handleDeprecationInRestore = if (item.isChecked) RESPECT else IGNORE
             }
             R.id.language_setting_restore_base_context_act -> {
                 item.isChecked = !item.isChecked
@@ -100,11 +107,11 @@ class MainActivity : LocaleExActivity() {
             }
             R.id.language_setting_handle_deprecation_apply -> {
                 item.isChecked = !item.isChecked
-                handleDeprecationInApply = item.isChecked
+                handleDeprecationInApply = if (item.isChecked) RESPECT else IGNORE
             }
             R.id.language_setting_handle_deprecation_update_configuration -> {
                 item.isChecked = !item.isChecked
-                handleDeprecationInUpdateConfig = item.isChecked
+                handleDeprecationInUpdateConfig = if (item.isChecked) RESPECT else IGNORE
             }
             else -> {
                 val entryName = resources.getResourceEntryName(item.itemId)

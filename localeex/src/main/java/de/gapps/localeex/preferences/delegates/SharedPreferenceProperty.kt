@@ -11,6 +11,8 @@ inline fun <PARENT : Context, reified VALUE_TYPE : Any?> SharedPreferencePropert
     keyValue: String,
     default: VALUE_TYPE,
     commit: Boolean = false,
+    noinline setter: ((VALUE_TYPE) -> String)? = null,
+    noinline getter: ((String) -> VALUE_TYPE)? = null,
     crossinline changedListener: (VALUE_TYPE) -> Unit = {}
 ) = object : ReadWriteProperty<PARENT, VALUE_TYPE> {
 
@@ -24,33 +26,31 @@ inline fun <PARENT : Context, reified VALUE_TYPE : Any?> SharedPreferencePropert
                 Float::class -> sharedPrefs.getFloat(keyValue, default as Float) as VALUE_TYPE
                 String::class -> sharedPrefs.getString(keyValue, default as String) as VALUE_TYPE
                 Long::class -> sharedPrefs.getLong(keyValue, default as Long) as VALUE_TYPE
-                Set::class -> sharedPrefs.getStringSet(
-                    keyValue,
-                    default as Set<String>
-                ) as VALUE_TYPE
-                else -> throw IllegalStateException("get() invalid type keyValue=$keyValue; type=${VALUE_TYPE::class}")
+                Set::class ->
+                    sharedPrefs.getStringSet(keyValue, default as Set<String>) as VALUE_TYPE
+                else -> sharedPrefs.getString(keyValue, default.toString())
+                    ?.let { getter?.invoke(it) }
+                    ?: throw IllegalStateException(
+                        "get() invalid type keyValue=$keyValue; type=${VALUE_TYPE::class}"
+                    )
             }
         }
         set(value) {
             val sharedPrefs = getSharedPreferences(keyPrefs, Context.MODE_PRIVATE)
             when (VALUE_TYPE::class) {
-                Boolean::class -> sharedPrefs.edit(commit) {
-                    putBoolean(
-                        keyValue,
-                        value as Boolean
-                    )
-                }
+                Boolean::class ->
+                    sharedPrefs.edit(commit) { putBoolean(keyValue, value as Boolean) }
                 Int::class -> sharedPrefs.edit(commit) { putInt(keyValue, value as Int) }
                 Float::class -> sharedPrefs.edit(commit) { putFloat(keyValue, value as Float) }
                 String::class -> sharedPrefs.edit(commit) { putString(keyValue, value as String) }
                 Long::class -> sharedPrefs.edit(commit) { putLong(keyValue, value as Long) }
-                Set::class -> sharedPrefs.edit(commit) {
-                    putStringSet(
-                        keyValue,
-                        value as Set<String>
-                    )
-                }
-                else -> throw IllegalStateException("set($value) invalid type keyValue=$keyValue; type=${VALUE_TYPE::class}")
+                Set::class ->
+                    sharedPrefs.edit(commit) { putStringSet(keyValue, value as Set<String>) }
+                else -> setter?.invoke(value)?.also {
+                    sharedPrefs.edit(commit) { putString(keyValue, it) }
+                } ?: throw IllegalStateException(
+                    "set($value) invalid type keyValue=$keyValue; type=${VALUE_TYPE::class}"
+                )
             }
         }
 

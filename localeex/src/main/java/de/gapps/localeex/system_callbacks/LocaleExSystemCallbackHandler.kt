@@ -1,52 +1,50 @@
 package de.gapps.localeex.system_callbacks
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.util.Log
+import de.gapps.localeex.LocaleEx.TAG
 import de.gapps.localeex.internal.ILocaleExInternal
 import de.gapps.localeex.internal.LocaleExInternal
 import de.gapps.localeex.listener.ILocaleExListenerHandler
 import de.gapps.localeex.listener.LocaleExListenerHandler
+import de.gapps.localeex.preferences.ILocaleExPreferences.PostAction.*
 import java.lang.ref.WeakReference
+import kotlin.reflect.KClass
 import kotlin.system.exitProcess
 
-@SuppressLint("StaticFieldLeak")
 internal object LocaleExSystemCallbackHandler : ILocaleExSystemCallbacks,
     ILocaleExInternal by LocaleExInternal,
     ILocaleExListenerHandler by LocaleExListenerHandler {
 
-    private val TAG = LocaleExSystemCallbackHandler::class.java.simpleName
-
     internal var usedActivity: WeakReference<Activity>? = null
         private set
 
-    private fun Activity.startActivity() {
-        val clazz = this::class.java
-        Log.d(TAG, "startActivity() class=$clazz")
-        val i = Intent(this, clazz)
+    private fun Activity.startActivity(
+        clazz: KClass<out Activity>? = null,
+        intent: Intent? = null
+    ) {
+        val c = clazz?.java ?: this::class.java
+        val i = intent ?: Intent(this, c)
+        Log.v(TAG, "startActivity() intent=$i")
         startActivity(i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
     private val localeChangedListener: Activity.(Context) -> Unit = {
-        when {
-            shouldRestartApplication -> {
-                Log.w(TAG, "restarting application")
-                startActivity()
+        when (postAction) {
+            is RestartApplication -> {
+                startActivity(postAction.customActivityClass, postAction.customIntent)
                 exitProcess(0)
             }
-            shouldRestartActivity -> {
-                Log.w(TAG, "restarting activity")
-                startActivity()
+            is RestartActivity -> {
+                startActivity(postAction.customActivityClass, postAction.customIntent)
                 finishActivity(0)
             }
-            shouldRecreateActivity -> {
-                Log.w(TAG, "recreating activity")
-                recreate()
-            }
+            is RecreateActivity -> recreate()
+            is Nothing -> Unit
         }
     }
 

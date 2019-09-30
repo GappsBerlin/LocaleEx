@@ -5,7 +5,9 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.util.Log
+import androidx.fragment.app.Fragment
 import de.gapps.localeex.LocaleEx.TAG
 import de.gapps.localeex.internal.ILocaleExInternal
 import de.gapps.localeex.internal.LocaleExInternal
@@ -34,19 +36,34 @@ internal object LocaleExSystemCallbackHandler : ILocaleExSystemCallbacks,
     }
 
     private val localeChangedListener: Activity.(Context) -> Unit = {
-        when (postAction) {
+        val po = postAction
+        when (po) {
             is RestartApplication -> {
-                startActivity(postAction.customActivityClass, postAction.customIntent)
+                startActivity(po.customActivityClass, po.customIntent)
                 exitProcess(0)
             }
             is RestartActivity -> {
-                startActivity(postAction.customActivityClass, postAction.customIntent)
+                startActivity(po.customActivityClass, po.customIntent)
                 finishActivity(0)
             }
             is RecreateActivity -> recreate()
+            is ReloadFragment -> po.run { fragment ?: fragmentProvider?.invoke() }?.reload()
+                ?: throw IllegalArgumentException(
+                    "At least fragment or fragmentProvider has to " +
+                            "be set when using ReloadFragment as postAction."
+                )
             is Nothing -> Unit
         }
     }
+
+    private fun Fragment.reload() = fragmentManager
+        ?.beginTransaction()
+        ?.also {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) it.setReorderingAllowed(false)
+        }
+        ?.detach(this)
+        ?.attach(this)
+        ?.commitNow()
 
     override fun Activity.activityAttachBaseContext(newBase: Context) =
         if (newBase.restoreInBaseContextOfActivity) newBase.restoreLocale() else newBase

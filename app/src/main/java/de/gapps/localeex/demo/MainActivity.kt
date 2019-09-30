@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -34,6 +35,9 @@ class MainActivity : LocaleExActivity() {
         activity = this
     }
 
+    private val currentFragment: Fragment
+        get() = nav_host_fragment.childFragmentManager.fragments.first()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -42,9 +46,10 @@ class MainActivity : LocaleExActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean = menu?.run {
         MenuInflater(this@MainActivity).inflate(R.menu.language_setting, this)
-        findItem(R.id.language_setting_reload_fragment)?.isChecked = postAction is RecreateActivity
+        findItem(R.id.language_setting_recreate_act)?.isChecked = postAction is RecreateActivity
         findItem(R.id.language_setting_restart_act)?.isChecked = postAction is RestartActivity
         findItem(R.id.language_setting_restart_app)?.isChecked = postAction is RestartApplication
+        findItem(R.id.language_setting_reload_fragment)?.isChecked = postAction is ReloadFragment
         findItem(R.id.language_setting_override_config)?.isChecked =
             restoreInApplyOverrideConfiguration
         findItem(R.id.language_setting_config_changed_act)?.isChecked =
@@ -66,7 +71,7 @@ class MainActivity : LocaleExActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.language_setting_reload_fragment -> {
+            R.id.language_setting_recreate_act -> {
                 item.isChecked = !item.isChecked
                 postAction = if (item.isChecked) RecreateActivity else Nothing
                 invalidateOptionsMenu()
@@ -79,6 +84,12 @@ class MainActivity : LocaleExActivity() {
             R.id.language_setting_restart_app -> {
                 item.isChecked = !item.isChecked
                 postAction = if (item.isChecked) RestartApplication() else Nothing
+                invalidateOptionsMenu()
+            }
+            R.id.language_setting_reload_fragment -> {
+                item.isChecked = !item.isChecked
+                postAction =
+                    if (item.isChecked) ReloadFragment { activity.currentFragment } else Nothing
                 invalidateOptionsMenu()
             }
             R.id.language_setting_override_config -> {

@@ -15,7 +15,6 @@ internal object LocaleExPreferences : ILocaleExPreferences {
     private const val PREFS_LANGUAGE_KEY = "PREFS_LANGUAGE_KEY"
     private const val PREFS_COUNTRY_KEY = "PREFS_COUNTRY_KEY"
     private const val PREFS_VARIANT_KEY = "PREFS_VARIANT_KEY"
-    private const val PREFS_POST_ACTION_KEY = "PREFS_POST_ACTION_KEY"
     private const val PREFS_HANDLE_DEPRECATION_RESTORE = "PREFS_HANDLE_DEPRECATION_RESTORE"
     private const val PREFS_HANDLE_DEPRECATION_APPLY = "PREFS_HANDLE_DEPRECATION_APPLY"
     private const val PREFS_HANDLE_DEPRECATION_UPDATE_CONFIG =

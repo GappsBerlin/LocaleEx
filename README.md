@@ -22,7 +22,7 @@ allprojects {
 ```
 ```groovy
 dependencies {
-  implementation "com.github.SaschaZ:LocaleEx:1.0.2"
+  implementation "com.github.SaschaZ:LocaleEx:1.0.3"
 }
 ```
 

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
+import androidx.fragment.app.Fragment
 import de.gapps.localeex.LocaleEx
 import java.util.*
 import kotlin.reflect.KClass
@@ -58,6 +59,14 @@ interface ILocaleExPreferences {
         class RestartApplication(
             override val customActivityClass: KClass<out Activity>? = null,
             override val customIntent: Intent? = null
+        ) : PostAction()
+
+        /**
+         * Reloads provided [Fragment].
+         */
+        data class ReloadFragment(
+            val fragment: Fragment? = null,
+            val fragmentProvider: (() -> Fragment)? = null
         ) : PostAction()
 
         /**

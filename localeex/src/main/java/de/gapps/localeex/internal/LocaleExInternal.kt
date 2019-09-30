@@ -22,8 +22,8 @@ internal object LocaleExInternal : ILocaleExInternal,
     }
 
     override fun Context.applyLocale(locale: Locale): Context {
-        val newContext = updateResources(locale, handleDeprecationInApply)
         Log.v(TAG, "applyLocale() locale=$locale")
+        val newContext = updateResources(locale, handleDeprecationInApply)
         LocaleExListenerHandler.notifyListener(newContext)
         return newContext
     }

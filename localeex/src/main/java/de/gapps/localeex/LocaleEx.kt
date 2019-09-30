@@ -6,6 +6,7 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.Context
+import android.os.Build
 import de.gapps.localeex.impl.LocaleExActivity
 import de.gapps.localeex.impl.LocaleExApplication
 import de.gapps.localeex.internal.ILocaleExInternal
@@ -38,9 +39,9 @@ import java.util.*
  *    android:name="de.gapps.localeex.impl.LocaleExApplication"
  * ```
  *
- * Now you just need to call `applyLocale` to define you custom [Locale]:
+ * Now you can use the [LocaleEx.locale] property to define your custom [Locale]:
  * ```
- * LocaleEx.applyLocale(Locale("en", "EN"))
+ * LocaleEx.apply { context.locale = Locale("en", "EN") }
  * ```
  *
  * If you do not want to extend your [Activity]s and [Application] from the [LocaleEx] ones you can
@@ -53,4 +54,14 @@ object LocaleEx : ILocaleEx,
     ILocaleExListenerHandler by LocaleExListenerHandler {
 
     internal val TAG = LocaleEx::class.java.simpleName
+
+    override var Context.locale: Locale
+        get() = resources.configuration.run {
+            @Suppress("DEPRECATION")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) locales[0]
+            else locale
+        }
+        set(value) {
+            applyLocale(value)
+        }
 }

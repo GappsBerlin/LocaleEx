@@ -118,14 +118,12 @@ class MainActivity : LocaleExActivity() {
                 Log.v(
                     "MainActivity", "new language selected=R.string.$entryName"
                 )
-                applyLocale(
-                    when (item.itemId) {
-                        R.id.language_setting_english -> Locale("en", "EN")
-                        R.id.language_setting_german -> Locale("de", "DE")
-                        R.id.language_setting_french -> Locale("fr", "FR")
-                        else -> throw IllegalArgumentException("unknown language id R.string.$entryName")
-                    }
-                )
+                locale = when (item.itemId) {
+                    R.id.language_setting_english -> Locale("en")
+                    R.id.language_setting_german -> Locale("de")
+                    R.id.language_setting_french -> Locale("fr")
+                    else -> throw IllegalArgumentException("unknown language id R.string.$entryName")
+                }
             }
         }
         return super.onOptionsItemSelected(item)

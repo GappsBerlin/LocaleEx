@@ -3,12 +3,13 @@ package de.gapps.localeex.demo.ui.base
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import de.gapps.localeex.ILocaleEx
 import de.gapps.localeex.LocaleEx
 import de.gapps.localeex.demo.MainActivity
 import de.gapps.localeex.demo.MainApplication
 import de.gapps.localeex.demo.R
 
-abstract class DemoViewModel(val title: Int) : ViewModel() {
+abstract class DemoViewModel(private val title: Int) : ViewModel(), ILocaleEx by LocaleEx {
 
     init {
         LocaleEx.addLocaleListener { _localeResultLoader() }
@@ -22,7 +23,7 @@ abstract class DemoViewModel(val title: Int) : ViewModel() {
                 val message = R.string.message
                 value = LocaleResult(
                     activity.getString(title),
-                    activity.getString(message, "Selected", ""),
+                    activity.getString(message, "Selected", "(${activity.locale})"),
                     activity.getString(message, "Activity", "@${activity.resources.hashCode()}"),
                     application.getString(
                         message,

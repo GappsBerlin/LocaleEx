@@ -25,6 +25,8 @@ internal object LocaleExSystemCallbackHandler : ILocaleExSystemCallbacks,
     internal var usedActivity: WeakReference<Activity>? = null
         private set
 
+    private var usedApplication: WeakReference<Application>? = null
+
     private fun Activity.startActivity(
         clazz: KClass<out Activity>? = null,
         intent: Intent? = null
@@ -36,8 +38,8 @@ internal object LocaleExSystemCallbackHandler : ILocaleExSystemCallbacks,
     }
 
     private val localeChangedListener: Activity.(Context) -> Unit = {
-        val po = postAction
-        when (po) {
+        usedApplication?.get()?.restoreLocale()
+        when (val po = postAction) {
             is RestartApplication -> {
                 startActivity(po.customActivityClass, po.customIntent)
                 exitProcess(0)
@@ -84,8 +86,10 @@ internal object LocaleExSystemCallbackHandler : ILocaleExSystemCallbacks,
 
     override fun Activity.activityOnDestroy() = removeLocaleListener(localeChangedListener)
 
-    override fun Application.applicationAttachBaseContext(newBase: Context) =
-        if (newBase.restoreInBaseContextOfApplication) newBase.restoreLocale() else newBase
+    override fun Application.applicationAttachBaseContext(newBase: Context): Context {
+        usedApplication = WeakReference(this)
+        return if (newBase.restoreInBaseContextOfApplication) newBase.restoreLocale() else newBase
+    }
 
     override fun Application.applicationOnConfigurationChanged(newConfig: Configuration): Configuration {
         if (restoreInConfigChangedOfApplication) restoreLocale()

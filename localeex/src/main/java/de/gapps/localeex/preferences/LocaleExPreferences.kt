@@ -28,6 +28,8 @@ internal object LocaleExPreferences : ILocaleExPreferences {
         "PREFS_RESTORE_CONFIG_CHANGED_ACTIVITY"
     private const val PREFS_RESTORE_CONFIG_CHANGED_APPLICATION =
         "PREFS_RESTORE_CONFIG_CHANGED_APPLICATION"
+    private const val PREFS_APPLY_LOCALE_TO_APPLICATION_ON_CHANGE =
+        "PREFS_APPLY_LOCALE_TO_APPLICATION_ON_CHANGE"
 
 
     private var Context.languagePref: String by SharedPreferenceProperty(
@@ -113,6 +115,12 @@ internal object LocaleExPreferences : ILocaleExPreferences {
     override var Context.restoreInBaseContextOfApplication: Boolean by SharedPreferenceProperty(
         PREFS_KEY,
         PREFS_RESTORE_BASE_CONTEXT_APPLICATION,
+        true
+    )
+
+    override var Context.applyLocaleToApplicationOnChange: Boolean by SharedPreferenceProperty(
+        PREFS_KEY,
+        PREFS_APPLY_LOCALE_TO_APPLICATION_ON_CHANGE,
         true
     )
 }

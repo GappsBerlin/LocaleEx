@@ -166,5 +166,12 @@ interface ILocaleExPreferences {
      * Default is `true`.
      */
     var Context.restoreInBaseContextOfApplication: Boolean
+    /**
+     * If `true` [LocaleEx.restoreLocale] is called on the [Application][Context] when [Locale]
+     * changes.
+     *
+     * Default is `true`
+     */
+    var Context.applyLocaleToApplicationOnChange: Boolean
 }
 

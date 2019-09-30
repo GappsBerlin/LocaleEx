@@ -25,6 +25,12 @@
         android:checkable="true"
         android:checked="false" />
     <item
+        android:id="@+id/language_setting_apply_to_app_on_change"
+        android:title="apply to app on change"
+        tools:ignore="HardcodedText"
+        android:checkable="true"
+        android:checked="false" />
+    <item
         android:id="@+id/language_setting_restore_base_context_act"
         android:title="restore base context (act)"
         tools:ignore="HardcodedText"

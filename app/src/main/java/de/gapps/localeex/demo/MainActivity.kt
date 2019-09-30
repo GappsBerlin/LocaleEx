@@ -50,6 +50,8 @@ class MainActivity : LocaleExActivity() {
         findItem(R.id.language_setting_restart_act)?.isChecked = postAction is RestartActivity
         findItem(R.id.language_setting_restart_app)?.isChecked = postAction is RestartApplication
         findItem(R.id.language_setting_reload_fragment)?.isChecked = postAction is ReloadFragment
+        findItem(R.id.language_setting_apply_to_app_on_change)?.isChecked =
+            applyLocaleToApplicationOnChange
         findItem(R.id.language_setting_override_config)?.isChecked =
             restoreInApplyOverrideConfiguration
         findItem(R.id.language_setting_config_changed_act)?.isChecked =
@@ -91,6 +93,10 @@ class MainActivity : LocaleExActivity() {
                 postAction =
                     if (item.isChecked) ReloadFragment { activity.currentFragment } else Nothing
                 invalidateOptionsMenu()
+            }
+            R.id.language_setting_apply_to_app_on_change -> {
+                item.isChecked = !item.isChecked
+                applyLocaleToApplicationOnChange = item.isChecked
             }
             R.id.language_setting_override_config -> {
                 item.isChecked = !item.isChecked

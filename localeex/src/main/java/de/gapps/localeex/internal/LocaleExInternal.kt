@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import de.gapps.localeex.LocaleEx.TAG
 import de.gapps.localeex.listener.LocaleExListenerHandler
 import de.gapps.localeex.preferences.ILocaleExPreferences
@@ -29,10 +30,10 @@ internal object LocaleExInternal : ILocaleExInternal,
     }
 
     override fun Context.updateConfiguration(config: Configuration): Configuration {
-        val newConfig = updateConfigurationInternal(
+        val (_, newConfig) = updateConfigurationInternal(
             config,
             handleDeprecation = handleDeprecationInUpdateConfig
-        ).second
+        )
         Log.v(TAG, "updateConfiguration() newConfig=$config; oldConfig=$config")
         return newConfig
     }
@@ -55,20 +56,31 @@ internal object LocaleExInternal : ILocaleExInternal,
     ) = try {
         if (handleDeprecation == DeprecationHandling.RESPECT
             && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-        ) {
-            config.setLocale(locale)
-            Pair(createConfigurationContext(config), config)
-        } else {
-            @Suppress("DEPRECATION")
-            config.locale = locale
-            @Suppress("DEPRECATION")
-            resources.updateConfiguration(config, resources.displayMetrics)
-            Pair(this, config)
-        }
+        ) update(config, locale)
+        else deprecateUpdate(config, locale)
     } catch (t: Throwable) {
-        Pair(this, config)
+        this to config
     }.also {
         Log.v(TAG, "updateConfigurationInternal() locale: $locale; config: $config")
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private fun Context.update(
+        config: Configuration,
+        locale: Locale
+    ): Pair<Context, Configuration> {
+        config.setLocale(locale)
+        return createConfigurationContext(config) to config
+    }
+
+    @Suppress("DEPRECATION")
+    private fun Context.deprecateUpdate(
+        config: Configuration,
+        locale: Locale
+    ): Pair<Context, Configuration> {
+        config.locale = locale
+        resources.updateConfiguration(config, resources.displayMetrics)
+        return this to config
     }
 
 }

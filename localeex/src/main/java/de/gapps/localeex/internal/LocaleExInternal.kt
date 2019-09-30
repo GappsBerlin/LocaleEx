@@ -16,15 +16,15 @@ internal object LocaleExInternal : ILocaleExInternal,
     ILocaleExPreferences by LocaleExPreferences {
 
     override fun Context.restoreLocale(): Context {
-        val locale = storedLocale
-        val newContext = updateResources(locale, handleDeprecationInRestore)
-        Log.v(TAG, "restoreLocale() locale=$locale; context=$newContext")
+        val newContext = updateResources(storedLocale, handleDeprecationInRestore)
+        Log.v(TAG, "restoreLocale() locale=$storedLocale; context=$newContext")
         return newContext
     }
 
     override fun Context.applyLocale(locale: Locale): Context {
         Log.v(TAG, "applyLocale() locale=$locale")
         val newContext = updateResources(locale, handleDeprecationInApply)
+        if (applyLocaleToApplicationOnChange) newContext.applicationContext.restoreLocale()
         LocaleExListenerHandler.notifyListener(newContext)
         return newContext
     }

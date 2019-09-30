@@ -22,11 +22,11 @@ allprojects {
 ```
 ```groovy
 dependencies {
-  implementation "com.github.SaschaZ:LocaleEx:1.0.1"
+  implementation "com.github.SaschaZ:LocaleEx:1.0.2"
 }
 ```
 
-To use `LocaleEx` you need to extends all of your `Activity`s from `LocaleExActivity` and you
+To use `LocaleEx` you need to extends all of your `Activity`s from `LocaleExActivity` and your
 `Application` from `LocaleExApplication`. If you do not have a custom `Application` please add
 the following to your `application` tag in your `Manifest.xml`:
 ```xml
@@ -34,7 +34,7 @@ the following to your `application` tag in your `Manifest.xml`:
     android:name="de.gapps.localeex.impl.LocaleExApplication"
 ```
 
-Now you just need to call `applyLocale` to define you custom `Locale`:
+Now you can use the `LocaleEx.locale` property to define your custom `Locale`:
 ```java
 LocaleEx.apply { context.locale = Locale("en", "EN") }
 ```
